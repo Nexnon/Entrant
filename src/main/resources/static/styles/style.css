@@ -1,0 +1,21 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.header, .footer{
+    width: 100vw;
+    height: 15vh;
+}
+.header{
+    background-color: #3F72AF;
+    color: #F9F7F7;
+}
+.section{
+    width: 100vw;
+    height: 70vmin;
+    background-color: #F9F7F7;
+}
+.footer{
+    background-color: #112D4E;
+    color: #F9F7F7;
+}
