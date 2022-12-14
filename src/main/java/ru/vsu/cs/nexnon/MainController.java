@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.nexnon.database.db_temp;
 import ru.vsu.cs.nexnon.entity.Entrant;
 import ru.vsu.cs.nexnon.entity.EntrantPost;
+import ru.vsu.cs.nexnon.entity.LogInPost;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -18,19 +20,41 @@ public class MainController {
     public String showMain() {
         return "information";
     }
+    @GetMapping("/singup")
+    public String singUp() {
+        return "singup";
+    }
+    @GetMapping("/login")
+    public String logIn() {
+        return "login";
+    }
+
+
+    @PostMapping("/login")
+    public @ResponseBody Map<String,String> loginPost(@RequestBody LogInPost entrant, Model model){
+        Map<String, String> map = new HashMap<>();
+        List<Entrant> list = db_temp.entrantList;
+        for(Entrant e: list){
+            if(e.equals(new Entrant("", entrant.getEmail(), entrant.getPassword()))){
+                map.put("token", e.getToken());
+                break;
+            }
+        }
+        if(map.isEmpty()){
+            map.put("token", "null");
+        }
+        return map;
+    }
 
     @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public String user(@RequestParam(name = "token", required = false) String token, Model model){
-        if(token == null){
-            return "singup";
-        }
-        System.out.println(token);
-        if(!token.equals("null")) {
+        if(token.equals("null")){
+            return "login";
+        }else {
             model.addAttribute("entrant", db_temp.getEntrant(token));
             return "user";
         }
-        return "singup";
     }
 
     @PostMapping("/user/register")

@@ -1,6 +1,7 @@
 package ru.vsu.cs.nexnon.entity;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class Entrant {
 
@@ -57,6 +58,19 @@ public class Entrant {
         }
         maxId++;
         token = str.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Entrant entrant = (Entrant) o;
+        return Objects.equals(email, entrant.email) && Objects.equals(password, entrant.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, password);
     }
 
     public String getName() {
