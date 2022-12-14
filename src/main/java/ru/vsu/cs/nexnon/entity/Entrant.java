@@ -1,13 +1,15 @@
-package ru.vsu.cs.nexnon.essences;
+package ru.vsu.cs.nexnon.entity;
 
 import java.awt.*;
 
 public class Entrant {
 
-    private int id;
+    private final String token;
     private static int maxId = 0;
 
     private String email;
+
+    private String name;
 
     private String password;
 
@@ -20,7 +22,7 @@ public class Entrant {
     private Image photo;
 
     public Entrant(String email, String password, Image passportScan, Image scanOfCertificate, int scores, Image photo) {
-        id = maxId++;
+        token = name + maxId++;
         this.email = email;
         this.password = password;
         this.passportScan = passportScan;
@@ -29,12 +31,44 @@ public class Entrant {
         this.photo = photo;
     }
 
-    public int getId() {
-        return id;
+    public Entrant(String name, String email, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+
+        char[] letters = name.toCharArray();
+        StringBuilder str = new StringBuilder();
+        for(char c: letters){
+            str.append((char)(c+1)).append(maxId*4+c);
+        }
+        maxId++;
+        token = str.toString();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Entrant(String name){
+        this.name = name;
+        char[] letters = name.toCharArray();
+        StringBuilder str = new StringBuilder();
+        for(char c: letters){
+            str.append((char)(c+5+(maxId % 4)));
+        }
+        for(char c: letters){
+            str.append((char)(c+5+ (maxId % 3)));
+        }
+        maxId++;
+        token = str.toString();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public String getEmail() {

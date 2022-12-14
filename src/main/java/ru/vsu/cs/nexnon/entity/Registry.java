@@ -1,4 +1,4 @@
-package ru.vsu.cs.nexnon.essences;
+package ru.vsu.cs.nexnon.entity;
 
 import java.util.ArrayList;
 import java.util.List;
