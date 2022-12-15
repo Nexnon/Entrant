@@ -5,9 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.nexnon.database.db_temp;
-import ru.vsu.cs.nexnon.entity.Entrant;
-import ru.vsu.cs.nexnon.entity.EntrantPost;
-import ru.vsu.cs.nexnon.entity.LogInPost;
+import ru.vsu.cs.nexnon.entity.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +44,15 @@ public class MainController {
         return map;
     }
 
+    @PostMapping("/addapplication")
+    public String addApplication(@RequestParam Map<String, Object> applicationPost, Model model){
+        System.out.println(applicationPost);
+        model.addAttribute("entrant", db_temp.getEntrant((String)applicationPost.get("entrant")));
+        model.addAttribute("directions", db_temp.directionList);
+        db_temp.applicationList.add(new Application(db_temp.getEntrant((String) applicationPost.get("entrant")), db_temp.getDirection(Integer.parseInt((String)applicationPost.get("direction")))));
+        return "user";
+    }
+
     @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public String user(@RequestParam(name = "token", required = false) String token, Model model){
@@ -53,6 +60,7 @@ public class MainController {
             return "login";
         }else {
             model.addAttribute("entrant", db_temp.getEntrant(token));
+            model.addAttribute("directions", db_temp.directionList);
             return "user";
         }
     }
@@ -69,7 +77,8 @@ public class MainController {
     }
 
     @GetMapping("/registry")
-    public String showRegistry() {
+    public String showRegistry(Model model) {
+        model.addAttribute("registry", db_temp.applicationList);
         return "registry";
     }
 }

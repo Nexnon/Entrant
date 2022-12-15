@@ -11,10 +11,29 @@
     <button class="ui-button" id="information" onclick="onInfoClick()">Информация</button>
     <button class="ui-button" id="registry" onclick="onRegistryClick()">Реестр</button>
     <button class="ui-button" id="personal_account" onclick="onPersonalClick()">Личный кабинет</button>
-    Абитуриент
 </header>
 <section class="section">
     Рейтинг абитуриентов
+    <table id="registry_table">
+
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Направление</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        <th:block th:each="appl: ${registry}">
+            <tr>
+                <td th:text="${appl.getEntrant().getEmail()}"/>
+                <td th:text="${appl.getDirection().getName()}" />
+            </tr>
+        </th:block>
+        </tbody>
+
+
+    </table>
 </section>
 <footer class="footer">
     Широков Илья

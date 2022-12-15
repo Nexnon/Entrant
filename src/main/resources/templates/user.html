@@ -11,12 +11,21 @@
     <button class="ui-button" id="information" onclick="onInfoClick()">Информация</button>
     <button class="ui-button" id="registry" onclick="onRegistryClick()">Реестр</button>
     <button class="ui-button" id="personal_account" onclick="onPersonalClick()">Личный кабинет</button>
-    Абитуриент
 </header>
 <section class="section">
-    <div>Name: [[${entrant.getName()}]]</div>
-    <div>Email: [[${entrant.getEmail()}]]</div>
-    <button type="button" onclick="onLogout()">Выйти из аккаунта</button>
+    <div>Name: [[${entrant.getName()}]]</div><br/>
+    <div>Email: [[${entrant.getEmail()}]]</div><br/>
+
+    <form action="/addapplication" method="post">
+        <select class="list" id="directions" name="direction">
+            <option th:each="direction : ${directions}" th:value="${direction.getId()}" th:text="${direction.getName()}"></option>
+        </select> <br/>
+        <input type="hidden" name="entrant" th:value="${entrant.getToken()}" >
+        <input class="ui-button" type="submit" text="Отправить заявление">
+    </form>
+
+
+    <button class="ui-button" type="button" onclick="onLogout()">Выйти из аккаунта</button>
 </section>
 <footer class="footer">
     Широков Илья
