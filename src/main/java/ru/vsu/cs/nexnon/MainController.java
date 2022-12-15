@@ -65,6 +65,19 @@ public class MainController {
         }
     }
 
+    @PostMapping("/user")
+    @ResponseStatus(HttpStatus.OK)
+    public String userPost(@RequestParam(name = "token", required = true) String token, Model model){
+        System.out.println(token);
+        if(token.equals("")){
+            return "login";
+        }else {
+            model.addAttribute("entrant", db_temp.getEntrant(token));
+            model.addAttribute("directions", db_temp.directionList);
+            return "user";
+        }
+    }
+
     @PostMapping("/user/register")
     public @ResponseBody Map<String,String> register(@RequestBody EntrantPost entrant, Model model){
         Map<String, String> map = new HashMap<>();
