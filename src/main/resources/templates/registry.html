@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
     <script th:src="@{script.js}"></script>
-    <script type="text/javascript">
-        function codeAddress() {
-            document.querySelector('#token').value = window.localStorage.getItem("token")
-        }
-        window.onload = codeAddress;
-    </script>
     <title>Entrant</title>
 </head>
 <body>
@@ -29,6 +23,7 @@
             <tr>
                 <th>Email</th>
                 <th>Направление</th>
+                <th>Баллы</th>
             </tr>
         </thead>
 
@@ -37,6 +32,7 @@
             <tr>
                 <td th:text="${appl.getEntrant().getEmail()}"/>
                 <td th:text="${appl.getDirection().getName()}" />
+                <td th:text="${appl.getEntrant().getScores()}"/>
             </tr>
         </th:block>
         </tbody>

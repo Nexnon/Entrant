@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}">
     <script th:src="@{script.js}"></script>
-    <script type="text/javascript">
-        function codeAddress() {
-            document.querySelector('#token').value = window.localStorage.getItem("token")
-        }
-        window.onload = codeAddress;
-    </script>
     <title>Entrant</title>
 </head>
 <body>
@@ -27,6 +21,11 @@
             <tr>
                 <td>Name: </td>
                 <td><input class="field" type="text" name="name" id="name"></td>
+            </tr>
+
+            <tr>
+                <td>Score: </td>
+                <td><input class="field" type="number" name="score" id="score"></td>
             </tr>
 
             <tr>

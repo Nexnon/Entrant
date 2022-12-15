@@ -1,3 +1,8 @@
+function codeAddress() {
+    document.querySelector('#token').value = window.localStorage.getItem("token")
+}
+window.onload = codeAddress;
+
 function onInfoClick(){
     window.location.href='/'
 }
@@ -8,11 +13,12 @@ function onRegister(){
     let name = document.querySelector('#name');
     let email = document.querySelector('#email');
     let password = document.querySelector('#password');
-    if(name == "" || email == "" || password == ""){
+    let score = document.querySelector('#score');
+    if(name == "" || email == "" || password == "" || score == 0){
         alert("Заполните все поля")
         return;
     }
-    let json = JSON.stringify({'name':name.value, 'email':email.value, 'password':password.value});
+    let json = 'name='+name.value+ '&email='+email.value+ '&password='+password.value+'&score='+score.value;
     let req = CreateRequest();
     if (!req)
     {
@@ -34,7 +40,7 @@ function onRegister(){
         console.log("catch", e)
     }
     req.open("POST", "/user/register")
-    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     req.responseType = "json"
     req.send(json);
 
@@ -44,7 +50,15 @@ function onLogout(){
     onPersonalClick()
 }
 function onPersonalClick(){
-    window.location.href = "/user?token="+window.localStorage.getItem("token");
+    var dispatchMouseEvent = function(target, var_args) {
+        var e = document.createEvent("MouseEvents");
+        // If you need clientX, clientY, etc., you can call
+        // initMouseEvent instead of initEvent
+        e.initEvent.apply(e, Array.prototype.slice.call(arguments, 1));
+        target.dispatchEvent(e);
+    };
+    codeAddress()
+    dispatchMouseEvent(document.querySelector("#personal_account"), 'click', true, true)
 }
 function onLogin(){
     let email = document.querySelector('#email');

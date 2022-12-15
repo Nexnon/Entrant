@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.nexnon.database.db_temp;
 import ru.vsu.cs.nexnon.entity.*;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class MainController {
         Map<String, String> map = new HashMap<>();
         List<Entrant> list = db_temp.entrantList;
         for(Entrant e: list){
-            if(e.equals(new Entrant("", entrant.getEmail(), entrant.getPassword()))){
+            if(e.equals(new Entrant("", entrant.getEmail(), entrant.getPassword(), 0))){
                 map.put("token", e.getToken());
                 break;
             }
@@ -50,19 +51,18 @@ public class MainController {
         model.addAttribute("entrant", db_temp.getEntrant((String)applicationPost.get("entrant")));
         model.addAttribute("directions", db_temp.directionList);
         db_temp.applicationList.add(new Application(db_temp.getEntrant((String) applicationPost.get("entrant")), db_temp.getDirection(Integer.parseInt((String)applicationPost.get("direction")))));
-        return "user";
-    }
+        db_temp.applicationList.sort(new Comparator<Application>() {
+            @Override
+            public int compare(Application o1, Application o2) {
+                if(o1.getDirection().getId() == o2.getDirection().getId()){
+                    return o2.getEntrant().getScores() - o1.getEntrant().getScores();
+                }else{
+                    return o1.getDirection().getId() - o2.getDirection().getId();
+                }
 
-    @GetMapping("/user")
-    @ResponseStatus(HttpStatus.OK)
-    public String user(@RequestParam(name = "token", required = false) String token, Model model){
-        if(token.equals("null")){
-            return "login";
-        }else {
-            model.addAttribute("entrant", db_temp.getEntrant(token));
-            model.addAttribute("directions", db_temp.directionList);
-            return "user";
-        }
+            }
+        });
+        return "user";
     }
 
     @PostMapping("/user")
@@ -79,11 +79,14 @@ public class MainController {
     }
 
     @PostMapping("/user/register")
-    public @ResponseBody Map<String,String> register(@RequestBody EntrantPost entrant, Model model){
+    public @ResponseBody Map<String,String> register(@RequestParam Map<String, Object> entrant, Model model){
         Map<String, String> map = new HashMap<>();
-        Entrant e = new Entrant(entrant.getName(), entrant.getEmail(), entrant.getPassword());
-        System.out.println(entrant.getEmail());
-        System.out.println(entrant.getName());
+        Entrant e = new Entrant(
+                (String) entrant.get("name"),
+                (String)entrant.get("email"),
+                (String)entrant.get("password"),
+                Integer.parseInt((String)entrant.get("score")));
+        System.out.println((String)entrant.get("email"));
         map.put("token", e.getToken());
         db_temp.entrantList.add(e);
         return map;

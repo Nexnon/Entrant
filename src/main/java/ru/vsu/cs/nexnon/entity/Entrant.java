@@ -32,7 +32,8 @@ public class Entrant {
         this.photo = photo;
     }
 
-    public Entrant(String name, String email, String password) {
+    public Entrant(String name, String email, String password, int score) {
+        this.scores = score;
         this.email = email;
         this.name = name;
         this.password = password;
