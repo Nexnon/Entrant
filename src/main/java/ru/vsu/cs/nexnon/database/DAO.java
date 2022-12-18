@@ -42,18 +42,26 @@ public class DAO {
         session.close();
     }
 
-    public void update(Entrant entrant) {
+    public void deleteEntrant(Entrant entrant) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction tx1 = session.beginTransaction();
-        session.update(entrant);
+        session.delete(entrant);
         tx1.commit();
         session.close();
     }
 
-    public void delete(Entrant entrant) {
+    public void deleteApplication(Application application) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction tx1 = session.beginTransaction();
-        session.delete(entrant);
+        session.delete(application);
+        tx1.commit();
+        session.close();
+    }
+
+    public void deleteDirection(Direction direction) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction tx1 = session.beginTransaction();
+        session.delete(direction);
         tx1.commit();
         session.close();
     }
