@@ -1,25 +1,35 @@
 package ru.vsu.cs.nexnon.entity;
 
+
+import jakarta.persistence.*;
+import ru.vsu.cs.nexnon.database.DAO;
+
+import java.util.Comparator;
+
+@Entity
+@Table(name = "application")
 public class Application {
 
-    private int id;
-    private static int maxId = 0;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "token")
     private Entrant entrant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "directionid")
     private Direction direction;
 
+    @Id
+    private int id;
+
+    private static int maxId = new DAO().findAllApplications().size();
+
+    public Application() {
+    }
+
     public Application(Entrant entrant, Direction direction) {
-        id = maxId++;
         this.entrant = entrant;
         this.direction = direction;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        id = maxId++;
     }
 
     public Entrant getEntrant() {
@@ -36,5 +46,13 @@ public class Application {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 }

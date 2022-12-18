@@ -4,16 +4,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.vsu.cs.nexnon.database.DAO;
 import ru.vsu.cs.nexnon.database.db_temp;
 import ru.vsu.cs.nexnon.entity.*;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class MainController {
+
+    private final DAO userDao = new DAO();
 
     @GetMapping("/")
     public String showMain() {
@@ -32,14 +32,11 @@ public class MainController {
     @PostMapping("/login")
     public @ResponseBody Map<String,String> loginPost(@RequestBody LogInPost entrant, Model model){
         Map<String, String> map = new HashMap<>();
-        List<Entrant> list = db_temp.entrantList;
-        for(Entrant e: list){
-            if(e.equals(new Entrant("", entrant.getEmail(), entrant.getPassword(), 0))){
-                map.put("token", e.getToken());
-                break;
-            }
-        }
-        if(map.isEmpty()){
+        Entrant e = userDao.findByEmail(entrant.getEmail());
+        System.out.println(e);
+        if(Objects.equals(e.getPassword(), entrant.getPassword())){
+            map.put("token", e.getToken());
+        }else {
             map.put("token", "null");
         }
         return map;
@@ -48,16 +45,17 @@ public class MainController {
     @PostMapping("/addapplication")
     public String addApplication(@RequestParam Map<String, Object> applicationPost, Model model){
         System.out.println(applicationPost);
-        model.addAttribute("entrant", db_temp.getEntrant((String)applicationPost.get("entrant")));
-        model.addAttribute("directions", db_temp.directionList);
-        db_temp.applicationList.add(new Application(db_temp.getEntrant((String) applicationPost.get("entrant")), db_temp.getDirection(Integer.parseInt((String)applicationPost.get("direction")))));
-        db_temp.applicationList.sort(new Comparator<Application>() {
+        model.addAttribute("entrant", userDao.findByToken((String)applicationPost.get("entrant")));
+        model.addAttribute("directions", userDao.findAllDirections());
+        userDao.saveApplication(new Application( userDao.findByToken((String) applicationPost.get("entrant")), userDao.findDirectionById(Integer.parseInt((String)applicationPost.get("direction")))));
+        List<Application> applicationList = userDao.findAllApplications();
+        applicationList.sort(new Comparator<Application>() {
             @Override
             public int compare(Application o1, Application o2) {
                 if(o1.getDirection().getId() == o2.getDirection().getId()){
                     return o2.getEntrant().getScores() - o1.getEntrant().getScores();
                 }else{
-                    return o1.getDirection().getId() - o2.getDirection().getId();
+                    return (int)(o1.getDirection().getId() - o2.getDirection().getId());
                 }
 
             }
@@ -72,8 +70,8 @@ public class MainController {
         if(token.equals("")){
             return "login";
         }else {
-            model.addAttribute("entrant", db_temp.getEntrant(token));
-            model.addAttribute("directions", db_temp.directionList);
+            model.addAttribute("entrant", userDao.findByToken(token));
+            model.addAttribute("directions", userDao.findAllDirections());
             return "user";
         }
     }
@@ -88,13 +86,13 @@ public class MainController {
                 Integer.parseInt((String)entrant.get("score")));
         System.out.println((String)entrant.get("email"));
         map.put("token", e.getToken());
-        db_temp.entrantList.add(e);
+        userDao.saveEntrant(e);
         return map;
     }
 
     @GetMapping("/registry")
     public String showRegistry(Model model) {
-        model.addAttribute("registry", db_temp.applicationList);
+        model.addAttribute("registry", userDao.findAllApplications());
         return "registry";
     }
 }

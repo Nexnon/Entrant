@@ -1,12 +1,21 @@
 package ru.vsu.cs.nexnon.entity;
 
-import java.awt.*;
+
+
+import jakarta.persistence.*;
+import ru.vsu.cs.nexnon.database.DAO;
+
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name="entrant")
 public class Entrant {
 
-    private final String token;
-    private static int maxId = 0;
+    @Id
+    private String token;
+    private static int maxId = new DAO().findAllEntrants().size();
 
     private String email;
 
@@ -14,23 +23,7 @@ public class Entrant {
 
     private String password;
 
-    private Image passportScan;
-
-    private Image scanOfCertificate;
-
     private int scores;
-
-    private Image photo;
-
-    public Entrant(String email, String password, Image passportScan, Image scanOfCertificate, int scores, Image photo) {
-        token = name + maxId++;
-        this.email = email;
-        this.password = password;
-        this.passportScan = passportScan;
-        this.scanOfCertificate = scanOfCertificate;
-        this.scores = scores;
-        this.photo = photo;
-    }
 
     public Entrant(String name, String email, String password, int score) {
         this.scores = score;
@@ -47,18 +40,20 @@ public class Entrant {
         token = str.toString();
     }
 
-    public Entrant(String name){
+    public Entrant(String token, String email, String name, String password, int score) {
+        this.scores = score;
+        this.email = email;
         this.name = name;
-        char[] letters = name.toCharArray();
-        StringBuilder str = new StringBuilder();
-        for(char c: letters){
-            str.append((char)(c+5+(maxId % 4)));
-        }
-        for(char c: letters){
-            str.append((char)(c+5+ (maxId % 3)));
-        }
-        maxId++;
-        token = str.toString();
+        this.password = password;
+        this.token = token;
+    }
+
+    public Entrant() {
+
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
@@ -73,6 +68,8 @@ public class Entrant {
     public int hashCode() {
         return Objects.hash(email, password);
     }
+
+
 
     public String getName() {
         return name;
@@ -102,22 +99,6 @@ public class Entrant {
         this.password = password;
     }
 
-    public Image getPassportScan() {
-        return passportScan;
-    }
-
-    public void setPassportScan(Image passportScan) {
-        this.passportScan = passportScan;
-    }
-
-    public Image getScanOfCertificate() {
-        return scanOfCertificate;
-    }
-
-    public void setScanOfCertificate(Image scanOfCertificate) {
-        this.scanOfCertificate = scanOfCertificate;
-    }
-
     public int getScores() {
         return scores;
     }
@@ -126,11 +107,12 @@ public class Entrant {
         this.scores = scores;
     }
 
-    public Image getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(Image photo) {
-        this.photo = photo;
+    @Override
+    public String toString() {
+        return token + '&' +
+                email + '&' +
+                name + '&' +
+                password + '&' +
+                scores;
     }
 }
