@@ -79,6 +79,11 @@ public class MainController {
     @PostMapping("/user/register")
     public @ResponseBody Map<String,String> register(@RequestParam Map<String, Object> entrant, Model model){
         Map<String, String> map = new HashMap<>();
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!" + userDao.findByEmail((String) entrant.get("email")));
+        if(userDao.findByEmail((String) entrant.get("email")) != null){
+            map.put("token", "emailIsRegistered");
+            return map;
+        }
         Entrant e = new Entrant(
                 (String) entrant.get("name"),
                 (String)entrant.get("email"),

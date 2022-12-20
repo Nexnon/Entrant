@@ -15,6 +15,10 @@ public class Direction {
     private int id;
     private static int maxId = new DAO().findAllDirections().size();
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Column(name = "name")
     private String name;
 

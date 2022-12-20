@@ -10,9 +10,9 @@ import java.util.List;
 
 public class TestDAO extends TestCase {
 
-    private Entrant entrant = new Entrant("Олег", "oleg@mail.ru", "1234", 234);
-    private Direction direction = new Direction("ИБ", 6);
-    private Application application = new Application(entrant, direction);
+    private static Entrant entrant = new Entrant("Олег", "oleg@mail.ru", "1234", 234);
+    private static Direction direction = new Direction("ИБ", 6);
+    private static Application application = new Application(entrant, direction);
 
     @Test
     public void testSaveData(){
@@ -57,16 +57,16 @@ public class TestDAO extends TestCase {
         int startSize = userDAO.findAllApplications().size();
         userDAO.deleteApplication(application);
         int endSize = userDAO.findAllApplications().size();
-        assertEquals(endSize - startSize, 0);
+        assertEquals(endSize - startSize, -1);
 
         startSize = userDAO.findAllEntrants().size();
         userDAO.deleteEntrant(entrant);
         endSize = userDAO.findAllEntrants().size();
-        assertEquals(endSize - startSize, 0);
+        assertEquals(endSize - startSize, -1);
 
         startSize = userDAO.findAllDirections().size();
         userDAO.deleteDirection(direction);
         endSize = userDAO.findAllDirections().size();
-        assertEquals(endSize - startSize, 0);
+        assertEquals(endSize - startSize, -1);
     }
 }

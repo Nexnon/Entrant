@@ -1,5 +1,6 @@
 package ru.vsu.cs.nexnon.database;
 
+import jakarta.persistence.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import ru.vsu.cs.nexnon.entity.Application;
@@ -14,8 +15,12 @@ public class DAO {
         return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(Entrant.class, token);
     }
 
-    public Entrant findByEmail(String email) {
-        return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(Entrant.class, email);
+    public Entrant findByEmail(String email1) {
+        List list = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("from Entrant where email = :email2").setParameter("email2", email1).list();
+        if(list.isEmpty()){
+            return null;
+        }
+        return (Entrant) list.get(0);
     }
 
     public void saveEntrant(Entrant entrant) {
@@ -29,7 +34,7 @@ public class DAO {
     public void saveApplication(Application application) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction tx1 = session.beginTransaction();
-        session.save(application);
+        session.persist(application);
         tx1.commit();
         session.close();
     }
@@ -45,7 +50,7 @@ public class DAO {
     public void deleteEntrant(Entrant entrant) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction tx1 = session.beginTransaction();
-        session.delete(entrant);
+        session.createQuery("delete from Entrant where token = :t").setParameter("t", entrant.getToken()).executeUpdate();
         tx1.commit();
         session.close();
     }

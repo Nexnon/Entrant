@@ -30,6 +30,10 @@ function onRegister(){
         {
             if (req.readyState == 4)
             {
+                if(req.response["token"] === "emailIsRegistered"){
+                    alert("Эта почта уже зарегестрирована")
+                    return;
+                }
                 window.localStorage.setItem("token",req.response["token"])
                 onPersonalClick()
             } else{
